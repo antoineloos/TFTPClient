@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="TP1ARSIR.jnlp">
+  <information>
+    <title>TP1ARSIR</title>
+    <vendor>Epulapp</vendor>
+    <description>null</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="TP1ARSIR.jar" size="6125" download="eager" />
+    <jar href="lib/jfoenix.jar" size="2154906" download="eager" />
+  </resources>
+  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="TP1ARSIR" >
+    <param name="requiredFXVersion" value="8.0+"/>
+  </applet-desc>
+  <jfx:javafx-desc  width="800" height="600" main-class="tp1arsir.TP1ARSIR"  name="TP1ARSIR" />
+  <update check="always"/>
+</jnlp>
