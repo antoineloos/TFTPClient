@@ -16,28 +16,16 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import tp1arsir.ACK;
 import tp1arsir.RequestFactory;
+import tp1arsir.TFTPFunction;
 import tp1arsir.UnsignedHelper;
 
 /**
  *
  * @author Epulapp
  */
-public final class SendFile {
+public final class SendFile extends TFTPFunction {
 
-    /**
-     * @param aCourantIP the courantIP to set
-     */
-    public static void setCourantIP(String aCourantIP) {
-        courantIP = aCourantIP;
-    }
     
-    private static final int port = 69;
-    private static final int packetLenght = 512;
-    private static String courantIP ="";
-    
-	
-
-	private final static int PACKET_SIZE = 516;
     
     
     private static int SendFile(File fileToSend) throws SocketException, IOException 
@@ -70,17 +58,7 @@ public final class SendFile {
     
      
     
-    private static DatagramPacket CreateDP(byte[] buf) throws UnknownHostException
-    {
-        return new DatagramPacket(buf, packetLenght , InetAddress.getByName(courantIP), port);
-    }
     
-    private static boolean isLastPacket(DatagramPacket datagramPacket) {
-		if (datagramPacket.getLength() < 512)
-			return true;
-		else
-			return false;
-	}
 
 	
 	
