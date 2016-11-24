@@ -32,14 +32,15 @@ public class ReceiveFile extends TFTPFunction {
 
         DatagramPacket rcDp = CreateDP(new byte[516]);
         socket.receive(rcDp);
-        if (DataPacket.getDataPacket(rcDp).getPacketNr() == 1) {
+        DataPacket responsedata = DataPacket.getDataPacket(rcDp);
+        if (responsedata.getPacketNr() == 1) {
             int ancienport = port;
             port = rcDp.getPort();
             int numpacket = 1;
-            byte[] buffer = new byte[512];
+            byte[] buffer = responsedata.getData();
             FileOutputStream out = new FileOutputStream(fileToReceive);
-            int rc = out.write(buffer);
-            while (rc != -1) {
+            out.write(buffer);
+            while (getData) {
                 byte[] request = RequestFactory.createDataRequest(numpacket, buffer);
                 int tentatives = 0;
                 boolean timeout = false;
