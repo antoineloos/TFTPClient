@@ -15,6 +15,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import tp1arsir.ACK;
 import tp1arsir.RequestFactory;
 import tp1arsir.TFTPFunction;
@@ -26,44 +27,58 @@ import tp1arsir.UnsignedHelper;
  */
 public final class SendFile extends TFTPFunction {
   
-    private static int SendFile(File fileToSend) throws SocketException, IOException 
+    public static int SendFile(File fileToSend) throws SocketException, IOException 
     {
         DatagramSocket socket = new DatagramSocket();
         socket.setSoTimeout(10000);
+        byte[] rrqrequest = RequestFactory.createRQRequest(RequestFactory.OP_WRQ, fileToSend.getName(), "octet");
+        int length = rrqrequest.length;
+        socket.send(CreateDP(rrqrequest, length));
 
-        socket.send(CreateDP(RequestFactory.createRQRequest(RequestFactory.OP_WRQ, fileToSend.getName(), "octet")));
-
-        DatagramPacket rcDp = CreateDP(new byte[4]);
+        DatagramPacket rcDp = CreateDP(new byte[4], 4);
         socket.receive(rcDp);
         if (ACK.getAck(rcDp).getAckNr() == 0) {
+            int ancienport = port;
+            port = rcDp.getPort();
             int numpacket = 1;
             byte[] buffer = new byte[512];
             FileInputStream in = new FileInputStream(fileToSend.getAbsolutePath());
             int rc = in.read(buffer);
             while (rc != -1) {
                 byte[] request = RequestFactory.createDataRequest(numpacket, buffer);
-                socket.send(CreateDP(request));
                 int tentatives = 0;
+                boolean timeout = false;
                 do {
-                    boolean timeout = false;
                     try {
+                        socket.send(CreateDP(request));
+                        
+                        rcDp = CreateDP(new byte[4], 4);
                         socket.receive(rcDp);
+                        
                     } catch (SocketTimeoutException e) {
                         timeout = true;
+                        tentatives ++;
+                        
+                        if (tentatives >= SendFile.NB_TENTATIVES) {
+                            throw e;
+                        }
                     } catch (Exception e) {
                         throw e;
                     } finally {
-                        if (timeout == true) {
-                            tentatives ++;
+                        if (timeout == false) {
+                            break;
                         }
                     }
-
-                } while (rcDp == null);
-
-                rc = in.read(buffer);
+                } while (timeout == true);
+                if (ACK.getAck(rcDp).getAckNr() == numpacket) {
+                    
+                    rc = in.read(buffer);
+                    numpacket ++;
+                } 
             }
-        };
-
+            port = ancienport;
+        }
+        
         return 0;
 
     }

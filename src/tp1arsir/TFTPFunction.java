@@ -14,9 +14,16 @@ import java.net.UnknownHostException;
  * @author Epulapp
  */
 public class TFTPFunction {
+    public static final int NB_TENTATIVES = 3;
+    
     protected static DatagramPacket CreateDP(byte[] buf) throws UnknownHostException
     {
-        return new DatagramPacket(buf, packetLenght , InetAddress.getByName(courantIP), port);
+        return new DatagramPacket(buf, PACKET_SIZE , InetAddress.getByName(courantIP), port);
+    }
+    
+    protected static DatagramPacket CreateDP(byte[] buf, int packetSize) throws UnknownHostException
+    {
+        return new DatagramPacket(buf, packetSize , InetAddress.getByName(courantIP), port);
     }
     
     protected static boolean isLastPacket(DatagramPacket datagramPacket) {
@@ -30,7 +37,7 @@ public class TFTPFunction {
         courantIP = aCourantIP;
     }
     
-    protected static final int port = 69;
+    protected static int port = 69;
     protected static final int packetLenght = 512;
     protected static String courantIP ="";
     protected final static int PACKET_SIZE = 516;

@@ -9,8 +9,11 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import java.io.File;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -98,7 +101,11 @@ public class View implements Observer {
                 if(fileChosen != null)
                 {
                     SendFile.setCourantIP(courantIP);
-                   // SendFile.SendFile(fileChosen);
+                    try {
+                        SendFile.SendFile(fileChosen);
+                    } catch (IOException ex) {
+                        Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         });

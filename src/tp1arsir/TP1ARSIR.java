@@ -5,7 +5,6 @@
  */
 package tp1arsir;
 
-import com.jfoenix.controls.JFXButton;
 import java.awt.event.MouseEvent;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
