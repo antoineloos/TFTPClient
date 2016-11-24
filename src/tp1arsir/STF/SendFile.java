@@ -31,9 +31,9 @@ public final class SendFile extends TFTPFunction {
     {
         DatagramSocket socket = new DatagramSocket();
         socket.setSoTimeout(10000);
-        byte[] rrqrequest = RequestFactory.createRQRequest(RequestFactory.OP_WRQ, fileToSend.getName(), "octet");
-        int length = rrqrequest.length;
-        socket.send(CreateDP(rrqrequest, length));
+        byte[] wrqrequest = RequestFactory.createRQRequest(RequestFactory.OP_WRQ, fileToSend.getName(), "octet");
+        int length = wrqrequest.length;
+        socket.send(CreateDP(wrqrequest, length));
 
         DatagramPacket rcDp = CreateDP(new byte[4], 4);
         socket.receive(rcDp);
