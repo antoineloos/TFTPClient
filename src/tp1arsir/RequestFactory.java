@@ -49,7 +49,7 @@ public final class RequestFactory {
     
         //for data packets
         
-        public static byte[] createDataRequest( final int packetnum, final Byte[] data) {
+        public static byte[] createDataRequest( final int packetnum, final byte[] data) {
 		byte zeroByte = 0;
 		int wrqByteLength = 2 + 2 + data.length;
 		byte[] wrqByteArray = new byte[wrqByteLength];
