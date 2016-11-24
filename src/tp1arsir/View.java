@@ -98,7 +98,7 @@ public class View implements Observer {
                 if(fileChosen != null)
                 {
                     SendFile.setCourantIP(courantIP);
-                    SendFile.SendFile(fileChosen);
+                   // SendFile.SendFile(fileChosen);
                 }
             }
         });

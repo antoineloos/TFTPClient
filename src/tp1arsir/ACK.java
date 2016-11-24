@@ -5,6 +5,8 @@
  */
 package tp1arsir;
 
+import java.net.DatagramPacket;
+
 /**
  *
  * @author Epulapp
@@ -44,5 +46,17 @@ public class ACK {
         out[2] = blockNr[0];
         out[3] = blockNr[1];
         return out;
+    }
+    
+    public static ACK getAck(DatagramPacket recvDatagramPacket) throws IllegalStateException
+    {
+        byte[] data = recvDatagramPacket.getData();
+
+        if (data[0] != 0 && data[1] != 4)
+        {
+          
+            throw new IllegalStateException("Not ack opcode, received code = " + data[0] + " " + data[1]);
+        }
+        return new ACK(data[2], data[3]);
     }
 }
