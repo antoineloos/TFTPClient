@@ -45,12 +45,19 @@ public final class SendFile extends TFTPFunction {
             FileInputStream in = new FileInputStream(fileToSend.getAbsolutePath());
             int rc = in.read(buffer);
             while (rc != -1) {
+                if (rc < 512) {
+                    byte[] bufferOLD = buffer;
+                    buffer = new byte[rc];
+                    for (int i=0; i<rc; i++) {
+                        buffer[i] = bufferOLD[i];
+                    }
+                }
                 byte[] request = RequestFactory.createDataRequest(numpacket, buffer);
                 int tentatives = 0;
                 boolean timeout = false;
                 do {
                     try {
-                        socket.send(CreateDP(request));
+                        socket.send(CreateDP(request, request.length));
                         
                         rcDp = CreateDP(new byte[4], 4);
                         socket.receive(rcDp);
