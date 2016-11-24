@@ -40,7 +40,8 @@ public class View implements Observer {
         private JFXButton SaveIPBtn;
         private StackPane root;
         private FlowPane pane;
-        private JFXTextArea textBox;
+        private JFXTextArea IPtextBox;
+        private JFXTextArea FNtextBox;
         private Label Feedback;
         private String courantIP; 
         
@@ -51,9 +52,14 @@ public class View implements Observer {
         pane.setOrientation(Orientation.VERTICAL);
         pane.setAlignment(Pos.CENTER);
         Feedback = new Label();
-        textBox = new JFXTextArea();
-        textBox.setPrefHeight(50);
-        textBox.setPrefWidth(150);
+        IPtextBox = new JFXTextArea();
+        IPtextBox.setPrefHeight(50);
+        IPtextBox.setPrefWidth(150);
+        
+        FNtextBox = new JFXTextArea();
+        FNtextBox.setPrefHeight(50);
+        FNtextBox.setPrefWidth(150);
+        
         filechs = new FileChooser();
         String style = " -fx-border-color: white; " + "-fx-border-width: 3;" + "-fx-background-color: #6AA6E2;" + "-fx-spacing: 5px;" + "-fx-text-fill: white;";
         
@@ -83,7 +89,25 @@ public class View implements Observer {
             
             @Override
             public void handle(ActionEvent event) {
-             courantIP = textBox.getText();
+             courantIP = IPtextBox.getText();
+            }
+        });
+        
+        //ReceiveBtn
+        ReceiveBtn = new JFXButton();
+        
+        ReceiveBtn.setStyle(style);
+        ReceiveBtn.setPrefHeight(50);
+        ReceiveBtn.setPrefWidth(150);
+        ReceiveBtn.setText("envoyer le fichier");
+        ReceiveBtn.setOnAction(new EventHandler<ActionEvent>() {
+            
+            @Override
+            public void handle(ActionEvent event) {
+                if(FNtextBox.getText()!="")
+                {
+                    ReceiveFile.ReceiveFile(FNtextBox.getText());
+                }
             }
         });
         
@@ -109,10 +133,13 @@ public class View implements Observer {
                 }
             }
         });
-        pane.getChildren().add(textBox);
+        
+        pane.getChildren().add(IPtextBox);
         pane.getChildren().add(SaveIPBtn);
         pane.getChildren().add(OpenBtn);
         pane.getChildren().add(SendBtn);
+        pane.getChildren().add(FNtextBox);
+        pane.getChildren().add(ReceiveBtn);
         pane.getChildren().add(Feedback);
         root.getChildren().add(pane);
         
