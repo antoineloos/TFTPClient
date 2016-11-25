@@ -14,6 +14,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import tp1arsir.ACK;
+import tp1arsir.DataPacket;
 import tp1arsir.RequestFactory;
 import tp1arsir.TFTPFunction;
 
@@ -40,15 +41,14 @@ public class ReceiveFile extends TFTPFunction {
             byte[] buffer = responsedata.getData();
             FileOutputStream out = new FileOutputStream(fileToReceive);
             out.write(buffer);
-            while (getData) {
-                byte[] request = RequestFactory.createDataRequest(numpacket, buffer);
+            while (buffer.length == 512) {
                 int tentatives = 0;
                 boolean timeout = false;
                 do {
                     try {
-                        socket.send(CreateDP(request));
+                        socket.send(CreateDP(RequestFactory.createAckRequest(numpacket),4));
                         
-                        rcDp = CreateDP(new byte[4], 4);
+                        rcDp = CreateDP(new byte[516], 516);
                         socket.receive(rcDp);
                         
                     } catch (SocketTimeoutException e) {

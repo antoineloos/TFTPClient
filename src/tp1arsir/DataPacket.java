@@ -43,4 +43,9 @@ public class DataPacket {
         for(int i = 0 ; i<data.length-4;i++){ datarcv[i] = data[i+4];}
         return new DataPacket(data[2], data[3],datarcv );
     }
+    
+    public byte[] getData()
+    {
+        return data;
+    }
 }
