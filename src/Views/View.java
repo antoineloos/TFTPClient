@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tp1arsir;
+package Views;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
@@ -24,6 +24,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import tp1arsir.STF.ReceiveFile;
 import tp1arsir.STF.SendFile;
 
 /**
@@ -106,7 +107,11 @@ public class View implements Observer {
             public void handle(ActionEvent event) {
                 if(FNtextBox.getText()!="")
                 {
-                    ReceiveFile.ReceiveFile(FNtextBox.getText());
+                    try {
+                        ReceiveFile.ReceiveFile(FNtextBox.getText());
+                    } catch (IOException ex) {
+                        Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         });

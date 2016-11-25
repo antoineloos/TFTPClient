@@ -5,6 +5,7 @@
  */
 package tp1arsir;
 
+import Views.View;
 import java.awt.event.MouseEvent;
 import javafx.application.Application;
 import javafx.event.ActionEvent;

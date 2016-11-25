@@ -17,9 +17,9 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import Model.ACK;
-import tp1arsir.RequestFactory;
+import Utils.RequestFactory;
 import tp1arsir.TFTPFunction;
-import tp1arsir.UnsignedHelper;
+import Utils.UnsignedHelper;
 
 /**
  *

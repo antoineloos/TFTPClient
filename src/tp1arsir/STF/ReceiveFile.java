@@ -15,7 +15,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import Model.ACK;
 import Model.DataPacket;
-import tp1arsir.RequestFactory;
+import Utils.RequestFactory;
 import tp1arsir.TFTPFunction;
 
 /**
