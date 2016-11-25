@@ -24,6 +24,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import tp1arsir.STF.ReceiveFile;
 import tp1arsir.STF.SendFile;
 
 /**
@@ -104,9 +105,13 @@ public class View implements Observer {
             
             @Override
             public void handle(ActionEvent event) {
-                if(FNtextBox.getText()!="")
+                if(!"".equals(FNtextBox.getText()))
                 {
-                    ReceiveFile.ReceiveFile(FNtextBox.getText());
+                    try {
+                        ReceiveFile.ReceiveFile(FNtextBox.getText());
+                    } catch (IOException ex) {
+                        Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         });
