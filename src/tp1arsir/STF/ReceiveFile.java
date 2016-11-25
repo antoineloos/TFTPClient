@@ -15,6 +15,8 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import Model.DataPacket;
 import Utils.RequestFactory;
+import Views.View;
+import javafx.scene.control.Label;
 import tp1arsir.TFTPFunction;
 
 /**
@@ -22,8 +24,8 @@ import tp1arsir.TFTPFunction;
  * @author Epulapp
  */
 public class ReceiveFile extends TFTPFunction {
-    public static int ReceiveFile(String fileToReceive) throws SocketException, IOException 
-    {
+
+    public static int ReceiveFile(String fileToReceive, Label lbError) throws SocketException, IOException {
         DatagramSocket socket = new DatagramSocket();
         socket.setSoTimeout(10000);
         byte[] rrqrequest = RequestFactory.createRQRequest(RequestFactory.OP_RRQ, fileToReceive, "octet");
@@ -31,57 +33,66 @@ public class ReceiveFile extends TFTPFunction {
         socket.send(CreateDP(rrqrequest, length));
 
         DatagramPacket rcDp = CreateDP(new byte[516]);
+
         socket.receive(rcDp);
-        DataPacket responsedata = DataPacket.getDataPacket(rcDp);
-        if (responsedata.getPacketNr() == 1) {
-            int ancienport = port;
-            port = rcDp.getPort();
-            int numpacket = 0;
-            byte[] buffer = responsedata.getData();
-            int taillepacket = rcDp.getLength() - 4;
-            FileOutputStream out = new FileOutputStream(fileToReceive);
-            out.write(buffer);
-            numpacket ++;
-            while (taillepacket >= 512) {
-                int tentatives = 0;
-                boolean timeout = false;
-                do {
-                    try {
-                        socket.send(CreateDP(RequestFactory.createAckRequest(numpacket),4));
-                        
-                        rcDp = CreateDP(new byte[516], 516);
-                        socket.receive(rcDp);
-                        
-                    } catch (SocketTimeoutException e) {
-                        timeout = true;
-                        tentatives ++;
-                        
-                        if (tentatives >= SendFile.NB_TENTATIVES) {
+
+        try {
+            DataPacket responsedata = DataPacket.getDataPacket(rcDp);
+
+            if (responsedata.getPacketNr() == 1) {
+                int ancienport = port;
+                port = rcDp.getPort();
+                int numpacket = 0;
+                byte[] buffer = responsedata.getData();
+                int taillepacket = rcDp.getLength() - 4;
+                FileOutputStream out = new FileOutputStream(fileToReceive);
+                out.write(buffer);
+                numpacket++;
+                while (taillepacket >= 512) {
+                    int tentatives = 0;
+                    boolean timeout = false;
+                    do {
+                        try {
+                            socket.send(CreateDP(RequestFactory.createAckRequest(numpacket), 4));
+
+                            rcDp = CreateDP(new byte[516], 516);
+                            socket.receive(rcDp);
+
+                        } catch (SocketTimeoutException e) {
+                            timeout = true;
+                            tentatives++;
+
+                            if (tentatives >= SendFile.NB_TENTATIVES) {
+                                throw e;
+                            }
+                        } catch (Exception e) {
                             throw e;
+                        } finally {
+                            if (timeout == false) {
+                                break;
+                            }
                         }
-                    } catch (Exception e) {
-                        throw e;
-                    } finally {
-                        if (timeout == false) {
-                            break;
-                        }
+                    } while (timeout == true);
+
+                    DataPacket dtpk = DataPacket.getDataPacket(rcDp);
+
+                    if (dtpk.getPacketNr() == numpacket + 1) {
+                        numpacket++;
+                        buffer = dtpk.getData();
+                        taillepacket = rcDp.getLength() - 4;
+                        out.write(buffer);
                     }
-                } while (timeout == true);
-                DataPacket dtpk = DataPacket.getDataPacket(rcDp);
-                
-                if (dtpk.getPacketNr() == numpacket +1 ) {
-                    numpacket ++;
-                    buffer = dtpk.getData();
-                    taillepacket = rcDp.getLength() - 4;
-                    out.write(buffer);
-                } 
+
+                }
+
+                out.write(buffer);
+                socket.send(CreateDP(RequestFactory.createAckRequest(numpacket), 4));
+                port = ancienport;
+                out.close();
             }
-            out.write(buffer);
-            socket.send(CreateDP(RequestFactory.createAckRequest(numpacket),4));
-            port = ancienport;
-            out.close();
+        } catch (IllegalStateException ex) {
+            lbError.setText(ex.getMessage());
         }
-        
         return 0;
 
     }

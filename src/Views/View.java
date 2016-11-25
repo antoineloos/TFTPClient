@@ -100,7 +100,7 @@ public class View implements Observer {
         ReceiveBtn.setStyle(style);
         ReceiveBtn.setPrefHeight(50);
         ReceiveBtn.setPrefWidth(150);
-        ReceiveBtn.setText("envoyer le fichier");
+        ReceiveBtn.setText("recevoir le fichier");
         ReceiveBtn.setOnAction(new EventHandler<ActionEvent>() {
             
             @Override
@@ -108,7 +108,8 @@ public class View implements Observer {
                 if(!"".equals(FNtextBox.getText()))
                 {
                     try {
-                        ReceiveFile.ReceiveFile(FNtextBox.getText());
+                        ReceiveFile.ReceiveFile(FNtextBox.getText(),Feedback );
+                        
                     } catch (IOException ex) {
                         Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -131,14 +132,14 @@ public class View implements Observer {
                 {
                     SendFile.setCourantIP(courantIP);
                     try {
-                        SendFile.SendFile(fileChosen);
+                        SendFile.SendFile(fileChosen, Feedback);
                     } catch (IOException ex) {
                         Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
         });
-        
+        Feedback.setText("blibli");
         pane.getChildren().add(IPtextBox);
         pane.getChildren().add(SaveIPBtn);
         pane.getChildren().add(OpenBtn);

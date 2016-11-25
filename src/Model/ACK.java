@@ -55,8 +55,8 @@ public class ACK {
 
         if (data[0] != 0 && data[1] != 4)
         {
-          
-            throw new IllegalStateException("Not ack opcode, received code = " + data[0] + " " + data[1]);
+            ErrorPacket error = ErrorPacket.getErrorPacket(recvDatagramPacket);
+            throw new IllegalStateException(ErrorPacket.errorList[error.codeError]+" "+error.getMessage());
         }
         return new ACK(data[2], data[3]);
     }

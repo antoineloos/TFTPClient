@@ -20,22 +20,23 @@ import Model.ACK;
 import Utils.RequestFactory;
 import tp1arsir.TFTPFunction;
 import Utils.UnsignedHelper;
+import Views.View;
+import javafx.scene.control.Label;
 
 /**
  *
  * @author Epulapp
  */
 public final class SendFile extends TFTPFunction {
-  
-    public static int SendFile(File fileToSend) throws SocketException, IOException 
-    {
+
+    public static int SendFile(File fileToSend, Label lbError) throws SocketException, IOException {
         DatagramSocket socket = new DatagramSocket();
         socket.setSoTimeout(10000);
         byte[] wrqrequest = RequestFactory.createRQRequest(RequestFactory.OP_WRQ, fileToSend.getName(), "octet");
         int length = wrqrequest.length;
         socket.send(CreateDP(wrqrequest, length));
 
-        DatagramPacket rcDp = CreateDP(new byte[4], 4);
+        DatagramPacket rcDp = CreateDP(new byte[516], 516);
         socket.receive(rcDp);
         if (ACK.getAck(rcDp).getAckNr() == 0) {
             int ancienport = port;
@@ -48,7 +49,7 @@ public final class SendFile extends TFTPFunction {
                 if (rc < 512) {
                     byte[] bufferOLD = buffer;
                     buffer = new byte[rc];
-                    for (int i=0; i<rc; i++) {
+                    for (int i = 0; i < rc; i++) {
                         buffer[i] = bufferOLD[i];
                     }
                 }
@@ -58,35 +59,45 @@ public final class SendFile extends TFTPFunction {
                 do {
                     try {
                         socket.send(CreateDP(request, request.length));
-                        
-                        rcDp = CreateDP(new byte[4], 4);
+
+                        rcDp = CreateDP(new byte[516], 516);
                         socket.receive(rcDp);
-                        
-                    } catch (SocketTimeoutException e) {
+
+                    }
+                    catch (SocketTimeoutException e) {
                         timeout = true;
-                        tentatives ++;
-                        
+                        tentatives++;
+
                         if (tentatives >= SendFile.NB_TENTATIVES) {
                             throw e;
                         }
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         throw e;
-                    } finally {
+                    }
+                    finally {
                         if (timeout == false) {
                             break;
                         }
                     }
-                } while (timeout == true);
-                if (ACK.getAck(rcDp).getAckNr() == numpacket) {
-                    
-                    rc = in.read(buffer);
-                    numpacket ++;
-                } 
+                }
+                while (timeout == true);
+                try {
+                    ACK ack = ACK.getAck(rcDp);
+                    if (ack.getAckNr() == numpacket) {
+
+                        rc = in.read(buffer);
+                        numpacket++;
+                    }
+                } catch (IllegalStateException ex) {
+                    lbError.setText(ex.getMessage());
+                }
+
             }
             port = ancienport;
             in.close();
         }
-        
+
         return 0;
 
     }

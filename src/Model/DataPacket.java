@@ -37,8 +37,8 @@ public class DataPacket {
 
         if (data[0] != 0 && data[1] != 3)
         {
-          
-            throw new IllegalStateException("");
+            ErrorPacket error = ErrorPacket.getErrorPacket(recvDatagramPacket);
+            throw new IllegalStateException(ErrorPacket.errorList[error.codeError]+" "+error.getMessage());
         }
         byte[] datarcv = new byte[data.length-4];
         for(int i = 0 ; i<data.length-4;i++){ datarcv[i] = data[i+4];}
