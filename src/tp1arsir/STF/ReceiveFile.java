@@ -13,7 +13,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import Model.ACK;
 import Model.DataPacket;
 import Utils.RequestFactory;
 import tp1arsir.TFTPFunction;
@@ -37,11 +36,13 @@ public class ReceiveFile extends TFTPFunction {
         if (responsedata.getPacketNr() == 1) {
             int ancienport = port;
             port = rcDp.getPort();
-            int numpacket = 1;
+            int numpacket = 0;
             byte[] buffer = responsedata.getData();
+            int taillepacket = rcDp.getLength() - 4;
             FileOutputStream out = new FileOutputStream(fileToReceive);
             out.write(buffer);
-            while (buffer.length == 512) {
+            numpacket ++;
+            while (taillepacket >= 512) {
                 int tentatives = 0;
                 boolean timeout = false;
                 do {
@@ -66,13 +67,19 @@ public class ReceiveFile extends TFTPFunction {
                         }
                     }
                 } while (timeout == true);
-                if (ACK.getAck(rcDp).getAckNr() == numpacket) {
-                    
-                    rc = in.read(buffer);
+                DataPacket dtpk = DataPacket.getDataPacket(rcDp);
+                
+                if (dtpk.getPacketNr() == numpacket +1 ) {
                     numpacket ++;
+                    buffer = dtpk.getData();
+                    taillepacket = rcDp.getLength() - 4;
+                    out.write(buffer);
                 } 
             }
+            out.write(buffer);
+            socket.send(CreateDP(RequestFactory.createAckRequest(numpacket),4));
             port = ancienport;
+            out.close();
         }
         
         return 0;

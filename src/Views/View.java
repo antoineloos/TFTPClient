@@ -105,7 +105,7 @@ public class View implements Observer {
             
             @Override
             public void handle(ActionEvent event) {
-                if(FNtextBox.getText()!="")
+                if(!"".equals(FNtextBox.getText()))
                 {
                     try {
                         ReceiveFile.ReceiveFile(FNtextBox.getText());

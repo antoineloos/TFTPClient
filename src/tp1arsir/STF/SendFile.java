@@ -84,6 +84,7 @@ public final class SendFile extends TFTPFunction {
                 } 
             }
             port = ancienport;
+            in.close();
         }
         
         return 0;
