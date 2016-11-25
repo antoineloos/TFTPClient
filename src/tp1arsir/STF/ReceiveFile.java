@@ -13,8 +13,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import tp1arsir.ACK;
-import tp1arsir.DataPacket;
+import Model.ACK;
+import Model.DataPacket;
 import tp1arsir.RequestFactory;
 import tp1arsir.TFTPFunction;
 
