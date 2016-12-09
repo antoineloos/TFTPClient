@@ -108,7 +108,10 @@ public class View implements Observer {
                 if(!"".equals(FNtextBox.getText()))
                 {
                     try {
-                        ReceiveFile.ReceiveFile(FNtextBox.getText(),Feedback );
+                       if(ReceiveFile.ReceiveFile(FNtextBox.getText(),Feedback )==0)
+                       {
+                           System.out.println("reception réussie");
+                       }
                         
                     } catch (IOException ex) {
                         Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
@@ -132,7 +135,10 @@ public class View implements Observer {
                 {
                     SendFile.setCourantIP(courantIP);
                     try {
-                        SendFile.SendFile(fileChosen, Feedback);
+                        if(SendFile.SendFile(fileChosen, Feedback)==0)
+                        {
+                            System.out.println("envoi réussi");
+                        };
                     } catch (IOException ex) {
                         Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
                     }

@@ -92,6 +92,7 @@ public class ReceiveFile extends TFTPFunction {
             }
         } catch (IllegalStateException ex) {
             lbError.setText(ex.getMessage());
+            return 1;
         }
         return 0;
 
